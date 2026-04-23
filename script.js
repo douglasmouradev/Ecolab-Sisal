@@ -1,5 +1,7 @@
 const form = document.querySelector(".contact-form");
 const formStatus = document.querySelector(".form-status");
+const newsletterForm = document.querySelector(".newsletter-form");
+const newsletterStatus = document.querySelector(".newsletter-status");
 const navToggle = document.querySelector(".nav-toggle");
 const primaryNav = document.querySelector("#nav-primary");
 const navLinks = primaryNav ? Array.from(primaryNav.querySelectorAll("a[href^='#']")) : [];
@@ -139,6 +141,48 @@ if (form) {
         formStatus.textContent = "";
         formStatus.className = "form-status";
       }
+    }, 2200);
+  });
+}
+
+if (newsletterForm) {
+  const newsletterInput = newsletterForm.querySelector('input[type="email"]');
+
+  newsletterInput?.addEventListener("blur", () => {
+    newsletterInput.classList.toggle("is-invalid", !newsletterInput.checkValidity());
+  });
+
+  newsletterInput?.addEventListener("input", () => {
+    if (newsletterInput.classList.contains("is-invalid")) {
+      newsletterInput.classList.toggle("is-invalid", !newsletterInput.checkValidity());
+    }
+  });
+
+  newsletterForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const submitButton = newsletterForm.querySelector('button[type="submit"]');
+
+    if (!newsletterInput || !newsletterInput.checkValidity()) {
+      newsletterInput?.classList.add("is-invalid");
+      newsletterStatus.textContent = "Digite um e-mail valido para assinar a newsletter.";
+      newsletterStatus.className = "newsletter-status is-error";
+      newsletterInput?.focus({ preventScroll: false });
+      return;
+    }
+
+    const originalLabel = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.textContent = "Inscrito!";
+    newsletterStatus.textContent = "Assinatura confirmada. Voce recebera a proxima edicao no seu e-mail.";
+    newsletterStatus.className = "newsletter-status is-success";
+
+    setTimeout(() => {
+      submitButton.disabled = false;
+      submitButton.textContent = originalLabel;
+      newsletterForm.reset();
+      newsletterInput.classList.remove("is-invalid");
+      newsletterStatus.textContent = "";
+      newsletterStatus.className = "newsletter-status";
     }, 2200);
   });
 }

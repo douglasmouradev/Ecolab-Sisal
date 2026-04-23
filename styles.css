@@ -989,6 +989,76 @@ blockquote {
   color: var(--muted);
 }
 
+.newsletter {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.66), rgba(238, 232, 219, 0.55));
+}
+
+.newsletter-wrap {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 24px;
+  align-items: center;
+  padding: 30px;
+  border-radius: 24px;
+  border: 1px solid var(--border-soft);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: var(--card-shadow);
+}
+
+.newsletter-copy h2 {
+  margin-bottom: 12px;
+}
+
+.newsletter-form {
+  display: grid;
+  gap: 10px;
+}
+
+.newsletter-form label {
+  font-weight: 600;
+}
+
+.newsletter-field {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+}
+
+.newsletter-field input {
+  width: 100%;
+  border: 1px solid #c0b49f;
+  background: #fff;
+  color: #25211b;
+  border-radius: 12px;
+  min-height: 48px;
+  padding: 10px 14px;
+  font: inherit;
+}
+
+.newsletter-field input:focus {
+  outline: 2px solid rgba(161, 98, 7, 0.25);
+  border-color: #a16207;
+}
+
+.newsletter-field input.is-invalid {
+  border-color: #d27f6f;
+}
+
+.newsletter-status {
+  margin: 0;
+  min-height: 1.3em;
+  font-size: 0.9rem;
+  color: #7e5d1f;
+}
+
+.newsletter-status.is-error {
+  color: #ad5a4a;
+}
+
+.newsletter-status.is-success {
+  color: #1f6e44;
+}
+
 .cta {
   background: #0f2b1b;
   color: #eaf5ed;
@@ -1180,6 +1250,7 @@ blockquote {
 @media (max-width: 920px) {
   .hero-grid,
   .cta-grid,
+  .newsletter-wrap,
   .cards,
   .showcase,
   .timeline,
@@ -1251,6 +1322,14 @@ blockquote {
   }
 
   .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .newsletter-wrap {
+    padding: 22px;
+  }
+
+  .newsletter-field {
     grid-template-columns: 1fr;
   }
 }
