@@ -334,38 +334,6 @@ footer {
   position: relative;
 }
 
-.hero-copy::before {
-  content: "";
-  position: absolute;
-  left: -22px;
-  top: 10px;
-  width: 2px;
-  height: 118px;
-  background: linear-gradient(180deg, rgba(29, 92, 63, 0), rgba(29, 92, 63, 0.68), rgba(161, 98, 7, 0.36));
-}
-
-.hero-topline {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px 14px;
-  margin-bottom: 18px;
-}
-
-.hero-topline-mark {
-  display: inline-flex;
-  align-items: center;
-  padding: 6px 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(27, 26, 23, 0.1);
-  background: rgba(255, 255, 255, 0.5);
-  color: #463f37;
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-}
-
 .eyebrow {
   display: inline-block;
   margin: 0 0 12px;
@@ -1267,14 +1235,6 @@ blockquote {
   h1,
   h2 {
     max-width: 100%;
-  }
-
-  .hero-copy::before {
-    display: none;
-  }
-
-  .hero-topline {
-    margin-bottom: 14px;
   }
 
   .section-image::before {
