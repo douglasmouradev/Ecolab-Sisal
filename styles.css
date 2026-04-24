@@ -1018,13 +1018,29 @@ blockquote {
   font-weight: 600;
 }
 
+.newsletter-name-field {
+  display: grid;
+  gap: 6px;
+}
+
+.optional-hint {
+  font-weight: 600;
+  color: var(--muted);
+  font-size: 0.88em;
+}
+
+.required-mark {
+  color: var(--accent);
+}
+
 .newsletter-field {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 10px;
 }
 
-.newsletter-field input {
+.newsletter-form input[type="text"],
+.newsletter-form input[type="email"] {
   width: 100%;
   border: 1px solid #c0b49f;
   background: #fff;
@@ -1035,12 +1051,13 @@ blockquote {
   font: inherit;
 }
 
-.newsletter-field input:focus {
+.newsletter-form input[type="text"]:focus,
+.newsletter-form input[type="email"]:focus {
   outline: 2px solid rgba(161, 98, 7, 0.25);
   border-color: #a16207;
 }
 
-.newsletter-field input.is-invalid {
+.newsletter-form input[type="email"].is-invalid {
   border-color: #d27f6f;
 }
 

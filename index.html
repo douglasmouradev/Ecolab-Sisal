@@ -406,7 +406,19 @@
             </p>
           </div>
           <form class="newsletter-form" novalidate>
-            <label for="newsletter-email">Seu e-mail profissional</label>
+            <div class="newsletter-name-field">
+              <label for="newsletter-name">Nome <span class="optional-hint">(opcional)</span></label>
+              <input
+                id="newsletter-name"
+                name="newsletterName"
+                type="text"
+                autocomplete="name"
+                placeholder="Seu nome"
+              />
+            </div>
+            <label for="newsletter-email">
+              Seu e-mail profissional <span class="required-mark" aria-hidden="true">*</span>
+            </label>
             <div class="newsletter-field">
               <input
                 id="newsletter-email"
