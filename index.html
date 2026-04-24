@@ -405,12 +405,18 @@
               para quem lidera agendas de clima, água, biodiversidade e impacto territorial.
             </p>
           </div>
-          <form class="newsletter-form" novalidate>
+          <form
+            class="newsletter-form"
+            action="https://formspree.io/f/mjgjjpgy"
+            method="POST"
+            novalidate
+          >
+            <input type="hidden" name="_subject" value="Newsletter — Sisal EcoLab" />
             <div class="newsletter-name-field">
               <label for="newsletter-name">Nome <span class="optional-hint">(opcional)</span></label>
               <input
                 id="newsletter-name"
-                name="newsletterName"
+                name="nome"
                 type="text"
                 autocomplete="name"
                 placeholder="Seu nome"
@@ -422,7 +428,7 @@
             <div class="newsletter-field">
               <input
                 id="newsletter-email"
-                name="newsletterEmail"
+                name="email"
                 type="email"
                 autocomplete="email"
                 required
@@ -449,7 +455,14 @@
               <a href="https://wa.me/5500000000000">Falar via WhatsApp</a>
             </div>
           </div>
-          <form class="contact-form" aria-label="Contato" novalidate>
+          <form
+            class="contact-form"
+            aria-label="Contato"
+            action="https://formspree.io/f/xqewwgpq"
+            method="POST"
+            novalidate
+          >
+            <input type="hidden" name="_subject" value="Contato — Sisal EcoLab (site)" />
             <div class="field">
               <label for="contact-name">Nome <span aria-hidden="true">*</span></label>
               <input

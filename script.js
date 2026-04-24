@@ -109,9 +109,10 @@ if (form) {
     });
   });
 
-  form.addEventListener("submit", (event) => {
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const button = form.querySelector('button[type="submit"]');
+    const endpoint = form.getAttribute("action");
     const invalidFields = Array.from(form.querySelectorAll("input, textarea, select")).filter(
       (field) => !validateField(field)
     );
@@ -126,22 +127,52 @@ if (form) {
     }
 
     const originalLabel = button.textContent;
-    button.textContent = "Mensagem enviada!";
     button.disabled = true;
+    button.textContent = "Enviando...";
     if (formStatus) {
-      formStatus.textContent = "Obrigado! Recebemos seu briefing inicial e este contato já está pronto para seguir para atendimento.";
-      formStatus.className = "form-status is-success";
+      formStatus.textContent = "";
+      formStatus.className = "form-status";
     }
 
-    setTimeout(() => {
-      button.textContent = originalLabel;
-      button.disabled = false;
-      form.reset();
-      if (formStatus) {
-        formStatus.textContent = "";
-        formStatus.className = "form-status";
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: new FormData(form)
+      });
+      const data = await response.json().catch(() => ({}));
+
+      if (response.ok) {
+        if (formStatus) {
+          formStatus.textContent =
+            "Mensagem enviada com sucesso! Retornaremos em breve pelo e-mail informado.";
+          formStatus.className = "form-status is-success";
+        }
+        form.reset();
+        form.querySelectorAll(".is-invalid").forEach((el) => el.classList.remove("is-invalid"));
+      } else {
+        const fromErrors =
+          data.errors &&
+          Object.values(data.errors)
+            .flat()
+            .filter(Boolean)
+            .join(" ");
+        const message =
+          (typeof data.error === "string" && data.error) ||
+          fromErrors ||
+          "Não foi possível enviar agora. Tente novamente em alguns instantes.";
+        throw new Error(message);
       }
-    }, 2200);
+    } catch (error) {
+      if (formStatus) {
+        formStatus.textContent =
+          error instanceof Error ? error.message : "Erro de rede. Verifique sua conexão e tente de novo.";
+        formStatus.className = "form-status is-error";
+      }
+    } finally {
+      button.disabled = false;
+      button.textContent = originalLabel;
+    }
   });
 }
 
@@ -158,32 +189,68 @@ if (newsletterForm) {
     }
   });
 
-  newsletterForm.addEventListener("submit", (event) => {
+  newsletterForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     const submitButton = newsletterForm.querySelector('button[type="submit"]');
+    const endpoint = newsletterForm.getAttribute("action");
 
     if (!newsletterInput || !newsletterInput.checkValidity()) {
       newsletterInput?.classList.add("is-invalid");
-      newsletterStatus.textContent = "Digite um e-mail valido para assinar a newsletter.";
-      newsletterStatus.className = "newsletter-status is-error";
+      if (newsletterStatus) {
+        newsletterStatus.textContent = "Digite um e-mail valido para assinar a newsletter.";
+        newsletterStatus.className = "newsletter-status is-error";
+      }
       newsletterInput?.focus({ preventScroll: false });
       return;
     }
 
     const originalLabel = submitButton.textContent;
     submitButton.disabled = true;
-    submitButton.textContent = "Inscrito!";
-    newsletterStatus.textContent = "Assinatura confirmada. Voce recebera a proxima edicao no seu e-mail.";
-    newsletterStatus.className = "newsletter-status is-success";
-
-    setTimeout(() => {
-      submitButton.disabled = false;
-      submitButton.textContent = originalLabel;
-      newsletterForm.reset();
-      newsletterInput.classList.remove("is-invalid");
+    submitButton.textContent = "Enviando...";
+    if (newsletterStatus) {
       newsletterStatus.textContent = "";
       newsletterStatus.className = "newsletter-status";
-    }, 2200);
+    }
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: new FormData(newsletterForm)
+      });
+      const data = await response.json().catch(() => ({}));
+
+      if (response.ok) {
+        if (newsletterStatus) {
+          newsletterStatus.textContent =
+            "Inscricao enviada com sucesso! Em breve voce recebera novidades no seu e-mail.";
+          newsletterStatus.className = "newsletter-status is-success";
+        }
+        newsletterForm.reset();
+        newsletterInput.classList.remove("is-invalid");
+      } else {
+        const fromErrors =
+          data.errors &&
+          Object.values(data.errors)
+            .flat()
+            .filter(Boolean)
+            .join(" ");
+        const message =
+          (typeof data.error === "string" && data.error) ||
+          fromErrors ||
+          "Nao foi possivel concluir o envio. Tente novamente em alguns instantes.";
+        throw new Error(message);
+      }
+    } catch (error) {
+      if (newsletterStatus) {
+        newsletterStatus.textContent =
+          error instanceof Error ? error.message : "Erro de rede. Verifique sua conexão e tente de novo.";
+        newsletterStatus.className = "newsletter-status is-error";
+      }
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = originalLabel;
+    }
   });
 }
 
