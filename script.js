@@ -24,10 +24,10 @@ const transitionPalettes = [
 ];
 
 const backgroundImages = [
-  "https://images.unsplash.com/photo-1439066615861-d1af74d74000?auto=format&fit=crop&w=2200&q=80",
-  "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=2200&q=80",
-  "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=2200&q=80",
-  "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=2200&q=80"
+  "assets/images/imagem-03.png",
+  "assets/images/imagem-04.png",
+  "assets/images/imagem-05.png",
+  "assets/images/imagem-06.png"
 ];
 
 const state = {
