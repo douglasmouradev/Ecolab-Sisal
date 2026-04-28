@@ -12,6 +12,7 @@ const scrollTransitions = document.querySelectorAll(".scroll-transition");
 const countupElements = document.querySelectorAll("[data-countup]");
 const bgPrimary = document.querySelector(".scroll-bg-primary");
 const bgSecondary = document.querySelector(".scroll-bg-secondary");
+const siteLoader = document.querySelector(".site-loader");
 const rootStyle = document.documentElement.style;
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 let scrollStateTimeout;
@@ -52,6 +53,46 @@ const easeInOut = (t) => 0.5 - Math.cos(Math.PI * clamp(t, 0, 1)) / 2;
 
 document.body.classList.remove("no-js");
 document.body.classList.add("js-enabled");
+
+const loaderStartTime = performance.now();
+const minimumLoaderDuration = prefersReducedMotion.matches ? 220 : 1400;
+const maximumLoaderDuration = prefersReducedMotion.matches ? 900 : 3200;
+let loaderDismissed = false;
+
+const dismissLoader = () => {
+  if (loaderDismissed) return;
+  loaderDismissed = true;
+  document.body.classList.add("is-loaded");
+  document.body.classList.remove("is-loading");
+  if (siteLoader) {
+    window.setTimeout(() => {
+      siteLoader.setAttribute("aria-hidden", "true");
+    }, 550);
+  }
+};
+
+const scheduleLoaderDismiss = () => {
+  const elapsed = performance.now() - loaderStartTime;
+  const remaining = Math.max(0, minimumLoaderDuration - elapsed);
+  window.setTimeout(dismissLoader, remaining);
+};
+
+if (!siteLoader) {
+  dismissLoader();
+} else {
+  const forceDismissTimeout = window.setTimeout(dismissLoader, maximumLoaderDuration);
+  const resolveLoader = () => {
+    window.clearTimeout(forceDismissTimeout);
+    scheduleLoaderDismiss();
+  };
+
+  if (document.readyState === "complete" || document.readyState === "interactive") {
+    resolveLoader();
+  } else {
+    document.addEventListener("DOMContentLoaded", resolveLoader, { once: true });
+    window.addEventListener("load", resolveLoader, { once: true });
+  }
+}
 
 if (bgPrimary) {
   bgPrimary.style.backgroundImage = `url("${backgroundImages[0]}")`;

@@ -46,6 +46,82 @@ body {
   background-image: radial-gradient(circle at 90% 0, rgba(210, 223, 197, 0.72) 0, transparent 32%);
 }
 
+.site-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 10040;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: linear-gradient(145deg, rgba(9, 27, 17, 0.97), rgba(22, 64, 42, 0.96));
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+  animation: loaderAutoExit 4.2s ease forwards;
+}
+
+body.is-loaded .site-loader {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.site-loader__content {
+  width: min(820px, 100%);
+  text-align: center;
+  color: #eff7f0;
+}
+
+.site-loader__eyebrow {
+  margin: 0 0 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #9fe2b8;
+}
+
+.site-loader h2 {
+  margin: 0 auto 18px;
+  font-size: clamp(1.7rem, 3.4vw, 2.5rem);
+  max-width: 26ch;
+}
+
+.site-loader__single {
+  margin: 0 auto;
+  width: min(860px, 92vw);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  box-shadow: 0 24px 40px -24px rgba(0, 0, 0, 0.7);
+  aspect-ratio: 16 / 9;
+  animation: loaderPulse 2.2s ease-in-out infinite;
+}
+
+.site-loader__single img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(1.1) contrast(1.05);
+}
+
+.site-loader__bar {
+  margin: 18px auto 0;
+  width: min(340px, 90%);
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  overflow: hidden;
+}
+
+.site-loader__bar span {
+  display: block;
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #6ad49b, #d8b06a);
+  animation: loaderBar 1.8s ease-in-out infinite;
+}
+
 body::before {
   content: "";
   position: fixed;
@@ -1238,6 +1314,44 @@ blockquote {
   }
 }
 
+@keyframes loaderPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.88;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 1;
+  }
+}
+
+@keyframes loaderBar {
+  0% {
+    width: 8%;
+  }
+  50% {
+    width: 76%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+@keyframes loaderAutoExit {
+  0%,
+  82% {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .scroll-bg-vignette {
     animation: none;
@@ -1259,6 +1373,11 @@ blockquote {
 
   .nav-toggle__bar {
     transition: none;
+  }
+
+  .site-loader__single,
+  .site-loader__bar span {
+    animation: none;
   }
 
   ::-webkit-scrollbar-thumb,
