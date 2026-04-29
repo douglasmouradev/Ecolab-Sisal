@@ -50,6 +50,53 @@ const state = {
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 const lerp = (start, end, factor) => start + (end - start) * factor;
 const easeInOut = (t) => 0.5 - Math.cos(Math.PI * clamp(t, 0, 1)) / 2;
+const fieldErrorMap = new WeakMap();
+let animationFrameId = 0;
+let shouldAnimate = true;
+
+const clearFieldError = (field) => {
+  if (!field) return;
+  field.classList.remove("is-invalid");
+  field.setAttribute("aria-invalid", "false");
+  const helper = fieldErrorMap.get(field);
+  if (helper) {
+    helper.textContent = "";
+    helper.hidden = true;
+  }
+};
+
+const setFieldError = (field, message) => {
+  if (!field) return;
+  field.classList.add("is-invalid");
+  field.setAttribute("aria-invalid", "true");
+  const helper = fieldErrorMap.get(field);
+  if (helper) {
+    helper.textContent = message;
+    helper.hidden = false;
+  }
+};
+
+const getFieldErrorMessage = (field) => {
+  if (!field.validity) return "Verifique este campo.";
+  if (field.validity.valueMissing) return "Preencha este campo obrigatório.";
+  if (field.validity.typeMismatch) return "Digite um valor válido.";
+  if (field.validity.tooShort) return `Use pelo menos ${field.minLength} caracteres.`;
+  if (field.validity.tooLong) return `Use no máximo ${field.maxLength} caracteres.`;
+  if (field.validity.patternMismatch) return "Formato inválido.";
+  return "Verifique este campo.";
+};
+
+const registerFieldHelper = (field, prefix) => {
+  if (!field || !field.id || fieldErrorMap.has(field)) return;
+  const helper = document.createElement("p");
+  helper.id = `${prefix}-${field.id}-error`;
+  helper.className = "field-error";
+  helper.hidden = true;
+  field.insertAdjacentElement("afterend", helper);
+  field.setAttribute("aria-describedby", helper.id);
+  field.setAttribute("aria-invalid", "false");
+  fieldErrorMap.set(field, helper);
+};
 
 document.body.classList.remove("no-js");
 document.body.classList.add("js-enabled");
@@ -134,13 +181,25 @@ if (navToggle && primaryNav) {
 }
 
 if (form) {
+  const contactHoneypot = form.querySelector('input[name="company"]');
+
   const validateField = (field) => {
     const isValid = field.checkValidity();
-    field.classList.toggle("is-invalid", !isValid);
+    if (isValid) {
+      clearFieldError(field);
+    } else {
+      setFieldError(field, getFieldErrorMessage(field));
+    }
     return isValid;
   };
 
   form.querySelectorAll("input, textarea, select").forEach((field) => {
+    if (field === contactHoneypot) return;
+    registerFieldHelper(field, "contact");
+  });
+
+  form.querySelectorAll("input, textarea, select").forEach((field) => {
+    if (field === contactHoneypot) return;
     field.addEventListener("blur", () => {
       validateField(field);
     });
@@ -155,9 +214,21 @@ if (form) {
     event.preventDefault();
     const button = form.querySelector('button[type="submit"]');
     const endpoint = form.getAttribute("action");
-    const invalidFields = Array.from(form.querySelectorAll("input, textarea, select")).filter(
-      (field) => !validateField(field)
+    const fields = Array.from(form.querySelectorAll("input, textarea, select")).filter(
+      (field) => field !== contactHoneypot
     );
+
+    if (contactHoneypot?.value.trim()) {
+      form.reset();
+      fields.forEach((field) => clearFieldError(field));
+      if (formStatus) {
+        formStatus.textContent = "Mensagem enviada com sucesso! Retornaremos em breve pelo e-mail informado.";
+        formStatus.className = "form-status is-success";
+      }
+      return;
+    }
+
+    const invalidFields = fields.filter((field) => !validateField(field));
 
     if (invalidFields.length) {
       if (formStatus) {
@@ -191,7 +262,7 @@ if (form) {
           formStatus.className = "form-status is-success";
         }
         form.reset();
-        form.querySelectorAll(".is-invalid").forEach((el) => el.classList.remove("is-invalid"));
+        fields.forEach((field) => clearFieldError(field));
       } else {
         const fromErrors =
           data.errors &&
@@ -220,14 +291,20 @@ if (form) {
 
 if (newsletterForm) {
   const newsletterInput = newsletterForm.querySelector('input[type="email"]');
+  const newsletterHoneypot = newsletterForm.querySelector('input[name="company"]');
+  registerFieldHelper(newsletterInput, "newsletter");
 
   newsletterInput?.addEventListener("blur", () => {
-    newsletterInput.classList.toggle("is-invalid", !newsletterInput.checkValidity());
+    if (newsletterInput.checkValidity()) {
+      clearFieldError(newsletterInput);
+    } else {
+      setFieldError(newsletterInput, getFieldErrorMessage(newsletterInput));
+    }
   });
 
   newsletterInput?.addEventListener("input", () => {
-    if (newsletterInput.classList.contains("is-invalid")) {
-      newsletterInput.classList.toggle("is-invalid", !newsletterInput.checkValidity());
+    if (newsletterInput.classList.contains("is-invalid") && newsletterInput.checkValidity()) {
+      clearFieldError(newsletterInput);
     }
   });
 
@@ -236,10 +313,23 @@ if (newsletterForm) {
     const submitButton = newsletterForm.querySelector('button[type="submit"]');
     const endpoint = newsletterForm.getAttribute("action");
 
-    if (!newsletterInput || !newsletterInput.checkValidity()) {
-      newsletterInput?.classList.add("is-invalid");
+    if (newsletterHoneypot?.value.trim()) {
+      newsletterForm.reset();
+      clearFieldError(newsletterInput);
       if (newsletterStatus) {
-        newsletterStatus.textContent = "Digite um e-mail valido para assinar a newsletter.";
+        newsletterStatus.textContent =
+          "Inscrição enviada com sucesso! Em breve você receberá novidades no seu e-mail.";
+        newsletterStatus.className = "newsletter-status is-success";
+      }
+      return;
+    }
+
+    if (!newsletterInput || !newsletterInput.checkValidity()) {
+      if (newsletterInput) {
+        setFieldError(newsletterInput, getFieldErrorMessage(newsletterInput));
+      }
+      if (newsletterStatus) {
+        newsletterStatus.textContent = "Digite um e-mail válido para assinar a newsletter.";
         newsletterStatus.className = "newsletter-status is-error";
       }
       newsletterInput?.focus({ preventScroll: false });
@@ -265,11 +355,11 @@ if (newsletterForm) {
       if (response.ok) {
         if (newsletterStatus) {
           newsletterStatus.textContent =
-            "Inscricao enviada com sucesso! Em breve voce recebera novidades no seu e-mail.";
+            "Inscrição enviada com sucesso! Em breve você receberá novidades no seu e-mail.";
           newsletterStatus.className = "newsletter-status is-success";
         }
         newsletterForm.reset();
-        newsletterInput.classList.remove("is-invalid");
+        clearFieldError(newsletterInput);
       } else {
         const fromErrors =
           data.errors &&
@@ -280,7 +370,7 @@ if (newsletterForm) {
         const message =
           (typeof data.error === "string" && data.error) ||
           fromErrors ||
-          "Nao foi possivel concluir o envio. Tente novamente em alguns instantes.";
+          "Não foi possível concluir o envio. Tente novamente em alguns instantes.";
         throw new Error(message);
       }
     } catch (error) {
@@ -421,6 +511,11 @@ const onScroll = () => {
 };
 
 const animate = () => {
+  if (!shouldAnimate) {
+    animationFrameId = 0;
+    return;
+  }
+
   state.progressWidth = lerp(state.progressWidth, state.targetProgressWidth, 0.18);
   if (progressBar) {
     progressBar.style.width = `${state.progressWidth.toFixed(2)}%`;
@@ -454,7 +549,7 @@ const animate = () => {
     }
   }
 
-  window.requestAnimationFrame(animate);
+  animationFrameId = window.requestAnimationFrame(animate);
 };
 
 const countupObserver = new IntersectionObserver(
@@ -523,6 +618,34 @@ countupElements.forEach((element) => {
 });
 
 window.addEventListener("scroll", onScroll, { passive: true });
+const syncAnimationState = () => {
+  const reducedMotion = prefersReducedMotion.matches;
+  shouldAnimate = !document.hidden && !reducedMotion;
+
+  if (!shouldAnimate) {
+    if (animationFrameId) {
+      window.cancelAnimationFrame(animationFrameId);
+      animationFrameId = 0;
+    }
+    if (progressBar) {
+      progressBar.style.width = `${state.targetProgressWidth.toFixed(2)}%`;
+    }
+    if (bgPrimary) {
+      bgPrimary.style.transform = "scale(1.08)";
+    }
+    if (bgSecondary) {
+      bgSecondary.style.transform = "scale(1.1)";
+    }
+    return;
+  }
+
+  if (!animationFrameId) {
+    animationFrameId = window.requestAnimationFrame(animate);
+  }
+};
+
+prefersReducedMotion.addEventListener("change", syncAnimationState);
+document.addEventListener("visibilitychange", syncAnimationState);
 window.addEventListener("resize", () => {
   updateImageTransitions();
   updateActiveNavLink();
@@ -532,4 +655,4 @@ updateScrollProgress();
 updateImageTransitions();
 updateActiveNavLink();
 updateHeaderState();
-animate();
+syncAnimationState();

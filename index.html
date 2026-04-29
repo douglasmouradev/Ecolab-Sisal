@@ -8,9 +8,12 @@
       name="description"
       content="Aceleramos regeneração ambiental e impacto social com ciência, tecnologia e colaboração local."
     />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
     <meta name="theme-color" content="#1d7a4c" />
+    <link rel="canonical" href="https://sisalecolab.com/" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content=" Sisal EcoLab| Regeneração com Comunidades" />
+    <meta property="og:title" content="Sisal EcoLab | Regeneração com Comunidades" />
+    <meta property="og:url" content="https://sisalecolab.com/" />
     <meta
       property="og:description"
       content="Aceleramos regeneração ambiental e impacto social com ciência, tecnologia e colaboração local."
@@ -19,6 +22,26 @@
       property="og:image"
       content="assets/images/imagem-01.jpeg"
     />
+    <meta property="og:locale" content="pt_BR" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Sisal EcoLab | Regeneração com Comunidades" />
+    <meta
+      name="twitter:description"
+      content="Aceleramos regeneração ambiental e impacto social com ciência, tecnologia e colaboração local."
+    />
+    <meta name="twitter:image" content="assets/images/imagem-01.jpeg" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Sisal EcoLab",
+        "url": "https://sisalecolab.com/",
+        "description": "Aceleramos regeneração ambiental e impacto social com ciência, tecnologia e colaboração local.",
+        "email": "contato@ivarnimpacto.com",
+        "areaServed": "BR",
+        "sameAs": []
+      }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -429,6 +452,16 @@
             novalidate
           >
             <input type="hidden" name="_subject" value="Newsletter — Sisal EcoLab" />
+            <div class="hp-field" aria-hidden="true">
+              <label for="newsletter-company">Empresa (não preencher)</label>
+              <input
+                id="newsletter-company"
+                name="company"
+                type="text"
+                tabindex="-1"
+                autocomplete="off"
+              />
+            </div>
             <div class="newsletter-name-field">
               <label for="newsletter-name">Nome <span class="optional-hint">(opcional)</span></label>
               <input
@@ -480,6 +513,16 @@
             novalidate
           >
             <input type="hidden" name="_subject" value="Contato — Sisal EcoLab (site)" />
+            <div class="hp-field" aria-hidden="true">
+              <label for="contact-company">Empresa (não preencher)</label>
+              <input
+                id="contact-company"
+                name="company"
+                type="text"
+                tabindex="-1"
+                autocomplete="off"
+              />
+            </div>
             <div class="field">
               <label for="contact-name">Nome <span aria-hidden="true">*</span></label>
               <input
@@ -559,6 +602,6 @@
       </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
   </body>
 </html>
