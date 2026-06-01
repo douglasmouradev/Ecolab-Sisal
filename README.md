@@ -1,35 +1,41 @@
-# EcoLab Sisal — site institucional
+# Sisal EcoLab — site institucional
 
-Landing page estática sobre regeneração na Caatinga: hero, soluções, método, programas em formato de cases, FAQ e formulários de contato/newsletter.
+Landing page estática sobre regeneração na Caatinga: hero, soluções, método, programas, cases, FAQ e formulários de contato/newsletter.
+
+**Demo:** [ecolab-sisal.vercel.app](https://ecolab-sisal.vercel.app)
 
 ## Destaques
 
 - Tipografia editorial (Fraunces + DM Sans)
-- Loader estável e transição de entrada da página
-- Blocos editoriais com fotos do território
-- SEO básico (`robots.txt`, `sitemap.xml`, Open Graph)
-- Avisos de privacidade (LGPD) nos formulários
+- Loader unificado com fallback CSS e redução de movimento
+- Faixas editoriais com fotos do território e scroll 3D (otimizado no mobile)
+- SEO (`robots.txt`, `sitemap.xml`, Open Graph, JSON-LD)
+- Política de privacidade (`privacidade.html`) e avisos LGPD nos formulários
+- Formulários via Formspree com validação acessível
 
 ## Estrutura
 
-| Arquivo       | Função |
-|---------------|--------|
-| `index.html`  | Estrutura e conteúdo da página |
-| `styles.css`  | Estilos e tema visual |
-| `script.js`   | Menu mobile, progresso de leitura, revelar seções, fundo dinâmico, formulário |
+| Arquivo / pasta | Função |
+|-----------------|--------|
+| `index.html` | Estrutura e conteúdo da página |
+| `styles.css` | Estilos e tema visual |
+| `script.js` | Menu, loader, scroll 3D, formulários, animações |
+| `js/site-config.js` | E-mail, URLs e tempos do loader |
+| `privacidade.html` | Política de privacidade (LGPD) |
+| `robots.txt` / `sitemap.xml` | SEO |
+| `assets/images/` | Imagens do território |
+| `assets/favicon.svg` / `logo-mark.svg` | Identidade visual |
 
 ## Como abrir localmente
 
-Não é necessário Node ou build. Abra o arquivo principal no navegador:
-
-- **macOS:** arraste `index.html` para o Chrome/Safari/Firefox, ou use um servidor simples para evitar restrições de `file://` em alguns recursos:
+Não é necessário Node ou build. Use um servidor HTTP simples:
 
 ```bash
-cd "/Users/douglas/Desktop/Projeto site Ivarn"
-python3 -m http.server 8080
+cd "caminho/para/Ecolab-Sisal"
+python -m http.server 8765
 ```
 
-Depois acesse `http://localhost:8080`.
+Acesse: `http://localhost:8765`
 
 ## Repositório
 
