@@ -1,6 +1,14 @@
 # EcoLab Sisal — site institucional
 
-Landing page estática sobre regeneração socioambiental: hero, soluções, método, programas, FAQ e formulário de contato, com animações leves de scroll e layout responsivo.
+Landing page estática sobre regeneração na Caatinga: hero, soluções, método, programas em formato de cases, FAQ e formulários de contato/newsletter.
+
+## Destaques
+
+- Tipografia editorial (Fraunces + DM Sans)
+- Loader estável e transição de entrada da página
+- Blocos editoriais com fotos do território
+- SEO básico (`robots.txt`, `sitemap.xml`, Open Graph)
+- Avisos de privacidade (LGPD) nos formulários
 
 ## Estrutura
 

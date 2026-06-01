@@ -6,38 +6,41 @@
     <title>Sisal EcoLab | Regeneração com Comunidades</title>
     <meta
       name="description"
-      content="Aceleramos regeneração ambiental e impacto social com ciência, tecnologia e colaboração local."
+      content="Projetos de regeneração na Caatinga com sisal, território e indicadores verificáveis para empresas, fundações e coalizões."
     />
     <meta name="robots" content="index,follow,max-image-preview:large" />
-    <meta name="theme-color" content="#1d7a4c" />
+    <meta name="theme-color" content="#123524" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="assets/favicon.svg" />
     <link rel="canonical" href="https://sisalecolab.com/" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Sisal EcoLab | Regeneração com Comunidades" />
     <meta property="og:url" content="https://sisalecolab.com/" />
     <meta
       property="og:description"
-      content="Aceleramos regeneração ambiental e impacto social com ciência, tecnologia e colaboração local."
+      content="Projetos de regeneração na Caatinga com sisal, território e indicadores verificáveis para empresas, fundações e coalizões."
     />
     <meta
       property="og:image"
-      content="assets/images/imagem-01.jpeg"
+      content="https://sisalecolab.com/assets/images/imagem-01.jpeg"
     />
     <meta property="og:locale" content="pt_BR" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Sisal EcoLab | Regeneração com Comunidades" />
     <meta
       name="twitter:description"
-      content="Aceleramos regeneração ambiental e impacto social com ciência, tecnologia e colaboração local."
+      content="Projetos de regeneração na Caatinga com sisal, território e indicadores verificáveis para empresas, fundações e coalizões."
     />
-    <meta name="twitter:image" content="assets/images/imagem-01.jpeg" />
+    <meta name="twitter:image" content="https://sisalecolab.com/assets/images/imagem-01.jpeg" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "Organization",
         "name": "Sisal EcoLab",
         "url": "https://sisalecolab.com/",
-        "description": "Aceleramos regeneração ambiental e impacto social com ciência, tecnologia e colaboração local.",
+        "description": "Projetos de regeneração na Caatinga com sisal, território e indicadores verificáveis para empresas, fundações e coalizões.",
         "email": "contato@ivarnimpacto.com",
+        "logo": "https://sisalecolab.com/assets/logo-mark.svg",
         "areaServed": "BR",
         "sameAs": []
       }
@@ -45,14 +48,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@9..144,500;9..144,600;9..144,700&display=swap"
       rel="stylesheet"
     />
-    <link
-      rel="preload"
-      as="image"
-      href="assets/images/imagem-11.png"
-    />
+    <link rel="preload" as="image" href="assets/images/imagem-01.jpeg" />
     <link rel="stylesheet" href="styles.css" />
     <noscript>
       <style>
@@ -62,31 +61,28 @@
       </style>
     </noscript>
   </head>
-  <body class="no-js is-loading">
-    <div class="site-loader" aria-live="polite" aria-label="Carregando experiência Sisal EcoLab">
-      <div class="site-loader__content">
-        <p class="site-loader__eyebrow">Sisal EcoLab</p>
-        <h2>Preparando territórios, clima e comunidades</h2>
-        <div class="site-loader__single" aria-hidden="true">
-          <img src="assets/images/imagem-11.png" alt="" />
+  <body class="no-js">
+    <div class="site-loader" aria-live="polite" aria-busy="true" aria-label="Carregando site">
+      <div class="site-loader__inner">
+        <img class="site-loader__logo" src="assets/logo-mark.svg" alt="Sisal EcoLab" width="40" height="40" decoding="async" />
+        <span class="site-loader__mark">Sisal EcoLab</span>
+        <span class="site-loader__context">Caatinga · Nordeste</span>
+        <div class="site-loader__track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <span class="site-loader__fill"></span>
         </div>
-        <div class="site-loader__bar" aria-hidden="true"><span></span></div>
       </div>
     </div>
     <a class="skip-link" href="#inicio">Pular para o conteúdo</a>
-    <div class="scroll-bg" aria-hidden="true">
-      <div class="scroll-bg-layer scroll-bg-primary"></div>
-      <div class="scroll-bg-layer scroll-bg-secondary"></div>
-      <div class="scroll-bg-vignette"></div>
-    </div>
-
     <div class="scroll-progress" aria-hidden="true">
       <span class="scroll-progress-bar"></span>
     </div>
 
     <header class="site-header">
       <div class="container nav">
-        <a class="logo" href="#inicio">Sisal EcoLab </a>
+        <a class="logo" href="#inicio">
+          <img class="logo__mark" src="assets/logo-mark.svg" alt="" width="28" height="28" decoding="async" aria-hidden="true" />
+          <span class="logo__wordmark">Sisal EcoLab</span>
+        </a>
         <button
           type="button"
           class="nav-toggle"
@@ -103,19 +99,21 @@
           <a href="#metodo">Método</a>
           <a href="#programas">Programas</a>
           <a href="#contato">Contato</a>
+          <a class="btn btn-nav" href="#contato">Agendar conversa</a>
         </nav>
       </div>
     </header>
 
-    <main>
-      <section id="inicio" class="hero reveal">
+    <main id="conteudo" class="site-main scroll-scene">
+      <section id="inicio" class="hero">
+        <div class="hero__veil" aria-hidden="true"></div>
         <div class="container hero-grid">
-          <div class="hero-copy">
-            <h1>Transformamos compromissos climáticos em projetos regenerativos com resultado mensurável.</h1>
+          <div class="hero-copy reveal">
+            <p class="eyebrow">Regeneração na Caatinga</p>
+            <h1>Projetos de impacto no semiárido, com sisal, território e indicadores verificáveis.</h1>
             <p class="lead">
-              A Sisal EcoLab conecta empresas, fundações e territórios a
-              soluções de restauração, segurança hídrica e inclusão produtiva
-              com governança, dados e execução local.
+              Para empresas, fundações e coalizões: estruturamos e executamos agendas de
+              restauração, água e inclusão produtiva com governança local e monitoramento contínuo.
             </p>
             <div class="hero-cta">
               <a class="btn btn-primary" href="#contato">Quero cocriar um projeto</a>
@@ -161,35 +159,46 @@
                 <span>estados com presença territorial e parceiros locais</span>
               </article>
             </div>
-            <div class="hero-card-note">
-              Projetos estruturados para unir impacto ambiental, reputação e
-              desenvolvimento local de longo prazo.
-            </div>
+            <p class="hero-card-note">
+              Indicadores consolidados de operação territorial. Detalhamento disponível sob demanda em
+              processos de due diligence.
+            </p>
           </aside>
         </div>
       </section>
 
-      <section class="trust reveal">
-        <div class="container">
-          <p>Empresas, fundações e coalizões que apostam em transformação sistêmica</p>
-          <div class="trust-list">
-            <span>Instituto Horizonte</span>
-            <span>Fundação Aurora</span>
-            <span>Coalizão Água Viva</span>
-            <span>Rede Vale Verde</span>
-            <span>Grupo Aliança Circular</span>
-            <span>Pacto Bacias Vivas</span>
+      <section class="trust reveal" aria-label="Áreas de atuação">
+        <div class="container trust-inner">
+          <div class="trust-copy">
+            <p class="eyebrow">Com quem trabalhamos</p>
+            <p class="trust-label">
+              Equipes de sustentabilidade, fundações, institutos e coalizões que precisam
+              transformar metas em projeto territorial com execução e mensuração.
+            </p>
           </div>
+          <ul class="trust-tags">
+            <li>Corporativo · ESG</li>
+            <li>Fundações</li>
+            <li>Institutos</li>
+            <li>Coalizões de bacia</li>
+            <li>Cooperativas do sisal</li>
+            <li>OSC territoriais</li>
+          </ul>
         </div>
       </section>
 
-      <div class="scroll-transition transition-water reveal">
-        <div class="scroll-transition-media"></div>
-        <div class="scroll-transition-overlay"></div>
-        <div class="scroll-transition-content">
-          <p>Água, solo e floresta em equilíbrio regenerativo</p>
+      <aside class="editorial-break editorial-break--caatinga reveal" aria-label="Território">
+        <span class="sr-only">Paisagem da caatinga no semiárido nordestino</span>
+        <div class="editorial-break__media" role="img" aria-hidden="true"></div>
+        <div class="editorial-break__veil"></div>
+        <div class="container editorial-break__copy">
+          <p class="editorial-break__label">Semiárido nordestino</p>
+          <blockquote>
+            O sisal amarra economia local, conservação do solo e narrativa de clima no mesmo
+            projeto.
+          </blockquote>
         </div>
-      </div>
+      </aside>
 
       <section id="solucoes" class="section section-image solucoes-bg reveal">
         <div class="container">
@@ -204,7 +213,6 @@
           <div class="cards">
             <article class="card reveal">
               <p class="card-eyebrow">Frente estratégica</p>
-              <div class="card-icon" aria-hidden="true">01</div>
               <h3>Carbono e Biodiversidade</h3>
               <p>
                 Estruturamos projetos de restauração e conservação com
@@ -219,7 +227,6 @@
             </article>
             <article class="card reveal">
               <p class="card-eyebrow">Infraestrutura natural</p>
-              <div class="card-icon" aria-hidden="true">02</div>
               <h3>Segurança Hídrica</h3>
               <p>
                 Recuperamos ciclos hidrológicos em bacias e microbacias com
@@ -233,7 +240,6 @@
             </article>
             <article class="card reveal">
               <p class="card-eyebrow">Capacidade local</p>
-              <div class="card-icon" aria-hidden="true">03</div>
               <h3>Aceleração de Organizações</h3>
               <p>
                 Desenvolvemos capacidades de gestão, sustentabilidade financeira
@@ -256,13 +262,15 @@
         </div>
       </section>
 
-      <div class="scroll-transition transition-forest reveal">
-        <div class="scroll-transition-media"></div>
-        <div class="scroll-transition-overlay"></div>
-        <div class="scroll-transition-content">
-          <p>Conservação com comunidades no centro da execução</p>
+      <aside class="editorial-break editorial-break--field reveal" aria-label="Execução em campo">
+        <span class="sr-only">Equipe em campo em projeto de restauração</span>
+        <div class="editorial-break__media" role="img" aria-hidden="true"></div>
+        <div class="editorial-break__veil"></div>
+        <div class="container editorial-break__copy">
+          <p class="editorial-break__label">Execução</p>
+          <blockquote>Diagnóstico, cocriação e monitoramento no mesmo fluxo — sem atalhos de comunicação.</blockquote>
         </div>
-      </div>
+      </aside>
 
       <section id="metodo" class="section section-dark section-image metodo-bg reveal">
         <div class="container">
@@ -311,14 +319,6 @@
         </div>
       </section>
 
-      <div class="scroll-transition transition-earth reveal">
-        <div class="scroll-transition-media"></div>
-        <div class="scroll-transition-overlay"></div>
-        <div class="scroll-transition-content">
-          <p>Impacto mensurável com ciência e monitoramento contínuo</p>
-        </div>
-      </div>
-
       <section id="programas" class="section section-image programas-bg reveal">
         <div class="container">
           <div class="section-heading">
@@ -330,32 +330,50 @@
             </p>
           </div>
           <div class="showcase">
-            <article class="showcase-card reveal">
-              <span class="badge">Bahia</span>
-              <h3>Bacias Resilientes</h3>
-              <p>
-                Iniciativa multiator para restaurar nascentes, ampliar infiltração
-                e melhorar segurança hídrica em territórios vulneráveis.
+            <article class="case-card reveal">
+              <header class="case-card__head">
+                <span class="badge">Bahia · Semiárido</span>
+                <h3>Bacias Resilientes</h3>
+              </header>
+              <p class="case-card__context">
+                Coalizão para recuperar nascentes e ciclos hídricos em microbacias com
+                pactos locais de governança e monitoramento georreferenciado.
               </p>
-              <strong class="showcase-metric">+48 nascentes priorizadas</strong>
+              <ul class="case-card__results">
+                <li>48 nascentes priorizadas com plano de intervenção</li>
+                <li>Rotina de indicadores para parceiros institucionais</li>
+              </ul>
+              <p class="case-card__meta">Foco: segurança hídrica e restauração</p>
             </article>
-            <article class="showcase-card reveal">
-              <span class="badge">Nordeste</span>
-              <h3>Rede de Negócios Regenerativos</h3>
-              <p>
-                Jornada de aceleração para cooperativas e empreendedores com foco
-                em agricultura regenerativa e economia circular.
+            <article class="case-card reveal">
+              <header class="case-card__head">
+                <span class="badge">Nordeste · Sisal</span>
+                <h3>Rede de Negócios Regenerativos</h3>
+              </header>
+              <p class="case-card__context">
+                Jornada de fortalecimento para cooperativas e empreendimentos ancorados na
+                fibra de sisal e práticas regenerativas na caatinga.
               </p>
-              <strong class="showcase-metric">63 negócios apoiados</strong>
+              <ul class="case-card__results">
+                <li>63 negócios com plano de gestão e acesso a mercado</li>
+                <li>Articulação com cadeias locais e compradores institucionais</li>
+              </ul>
+              <p class="case-card__meta">Foco: inclusão produtiva e economia territorial</p>
             </article>
-            <article class="showcase-card reveal">
-              <span class="badge">Multiestado</span>
-              <h3>Juventudes pelo Clima</h3>
-              <p>
-                Formação de lideranças jovens para gestão de projetos de impacto,
-                inclusão produtiva e mobilização comunitária.
+            <article class="case-card reveal">
+              <header class="case-card__head">
+                <span class="badge">Multiestado</span>
+                <h3>Juventudes pelo Clima</h3>
+              </header>
+              <p class="case-card__context">
+                Formação de lideranças jovens para gestão de projetos de impacto em
+                territórios com vulnerabilidade climática.
               </p>
-              <strong class="showcase-metric">1.200 jovens mobilizados</strong>
+              <ul class="case-card__results">
+                <li>1.200 jovens em trilhas de formação e protagonismo</li>
+                <li>Projetos comunitários cocriados e acompanhados</li>
+              </ul>
+              <p class="case-card__meta">Foco: capital humano e mobilização local</p>
             </article>
           </div>
         </div>
@@ -381,23 +399,20 @@
               <p>Porque combinamos ciência aplicada com capacidade de execução em campo e visão de longo prazo.</p>
             </article>
           </div>
-          <div class="testimonial reveal">
-            <p>
-              "A Sisal EcoLab nos ajudou a sair de uma intenção difusa para um programa
-              com metas, governança e impacto verificável em menos de 90 dias."
-            </p>
-            <span>Diretoria de sustentabilidade, parceiro institucional</span>
-          </div>
+          <figure class="testimonial reveal">
+            <blockquote>
+              <p>
+                Em três meses saímos de um escopo difuso para um programa com metas,
+                indicadores e governança territorial — pronto para prestação de contas interna.
+              </p>
+            </blockquote>
+            <figcaption>
+              <strong>Coordenação de sustentabilidade</strong>
+              <span>Empresa do setor de bens de consumo · parceira desde 2024</span>
+            </figcaption>
+          </figure>
         </div>
       </section>
-
-      <div class="scroll-transition transition-community reveal">
-        <div class="scroll-transition-media"></div>
-        <div class="scroll-transition-overlay"></div>
-        <div class="scroll-transition-content">
-          <p>Desenvolvimento local conectado ao clima e à biodiversidade</p>
-        </div>
-      </div>
 
       <section class="section quote reveal">
         <div class="container">
@@ -434,6 +449,18 @@
           </div>
         </div>
       </section>
+
+      <aside class="editorial-break editorial-break--community reveal" aria-label="Comunidades">
+        <span class="sr-only">Comunidades locais em atividade produtiva com sisal</span>
+        <div class="editorial-break__media" role="img" aria-hidden="true"></div>
+        <div class="editorial-break__veil"></div>
+        <div class="container editorial-break__copy">
+          <p class="editorial-break__label">Comunidades</p>
+          <blockquote>
+            Legitimidade local não é etapa do projeto — é condição para escalar com integridade.
+          </blockquote>
+        </div>
+      </aside>
 
       <section class="section newsletter reveal" aria-label="Newsletter">
         <div class="container newsletter-wrap">
@@ -487,6 +514,12 @@
               <button type="submit" class="btn btn-primary">Quero receber</button>
             </div>
             <p class="newsletter-status" role="status" aria-live="polite"></p>
+            <p class="form-privacy">
+              Ao enviar, você concorda em receber comunicações da Sisal EcoLab. Seus dados
+              são usados apenas para este fim, conforme a
+              <a href="privacidade.html">Política de Privacidade</a>.
+              <a href="mailto:contato@ivarnimpacto.com">Solicitar exclusão</a>.
+            </p>
           </form>
         </div>
       </section>
@@ -502,10 +535,11 @@
             </p>
             <div class="contact-options">
               <a href="mailto:contato@ivarnimpacto.com">contato@ivarnimpacto.com</a>
-              <a href="https://wa.me/5500000000000">Falar via WhatsApp</a>
+              <a href="#contato-form">Usar formulário ao lado</a>
             </div>
           </div>
           <form
+            id="contato-form"
             class="contact-form"
             aria-label="Contato"
             action="https://formspree.io/f/xqewwgpq"
@@ -588,6 +622,11 @@
               ></textarea>
             </div>
             <p class="field-help">Campos com * ajudam a preparar uma primeira conversa mais útil.</p>
+            <p class="form-privacy form-privacy--dark">
+              Os dados deste formulário são utilizados apenas para retorno sobre sua solicitação,
+              conforme a LGPD e nossa
+              <a href="privacidade.html">Política de Privacidade</a>.
+            </p>
             <p class="form-status" role="status" aria-live="polite"></p>
             <button type="submit" class="btn btn-primary">Enviar mensagem</button>
           </form>
@@ -596,12 +635,30 @@
     </main>
 
     <footer class="site-footer">
-      <div class="container footer-content">
-        <p>© 2026 Sisal EcoLab. Regeneração com escala, integridade e inclusão.</p>
-        <a href="#inicio">Voltar ao topo</a>
+      <div class="container footer-grid">
+        <div class="footer-brand">
+          <p class="footer-logo">Sisal EcoLab</p>
+          <p class="footer-tagline">Projetos de regeneração na Caatinga, com ciência aplicada e presença territorial.</p>
+        </div>
+        <nav class="footer-nav" aria-label="Rodapé">
+          <a href="#solucoes">Soluções</a>
+          <a href="#metodo">Método</a>
+          <a href="#programas">Programas</a>
+          <a href="#contato">Contato</a>
+        </nav>
+        <div class="footer-meta">
+          <p>© 2026 Sisal EcoLab</p>
+          <a href="mailto:contato@ivarnimpacto.com">contato@ivarnimpacto.com</a>
+          <a href="privacidade.html">Política de Privacidade</a>
+          <a href="#inicio">Topo da página</a>
+          <button type="button" class="motion-toggle" data-motion-toggle aria-pressed="false">
+            Reduzir animações
+          </button>
+        </div>
       </div>
     </footer>
 
+    <script src="js/site-config.js"></script>
     <script src="script.js" defer></script>
   </body>
 </html>

@@ -4,50 +4,63 @@ const newsletterForm = document.querySelector(".newsletter-form");
 const newsletterStatus = document.querySelector(".newsletter-status");
 const navToggle = document.querySelector(".nav-toggle");
 const primaryNav = document.querySelector("#nav-primary");
-const navLinks = primaryNav ? Array.from(primaryNav.querySelectorAll("a[href^='#']")) : [];
+const navLinks = primaryNav
+  ? Array.from(primaryNav.querySelectorAll("a[href^='#']:not(.btn-nav)"))
+  : [];
 const siteHeader = document.querySelector(".site-header");
 const progressBar = document.querySelector(".scroll-progress-bar");
 const revealElements = document.querySelectorAll(".reveal");
-const scrollTransitions = document.querySelectorAll(".scroll-transition");
+const editorialBreaks = document.querySelectorAll(".editorial-break");
 const countupElements = document.querySelectorAll("[data-countup]");
-const bgPrimary = document.querySelector(".scroll-bg-primary");
-const bgSecondary = document.querySelector(".scroll-bg-secondary");
 const siteLoader = document.querySelector(".site-loader");
-const rootStyle = document.documentElement.style;
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-let scrollStateTimeout;
+const MOTION_KEY = "sisal-reduce-motion";
+const siteConfig = window.SISAL_SITE || {};
 
-const transitionPalettes = [
-  { start: "#206986", end: "#74d2dc", glow: "rgba(89, 206, 219, 0.72)" },
-  { start: "#1f6a43", end: "#84d49f", glow: "rgba(99, 207, 136, 0.75)" },
-  { start: "#6f5a2d", end: "#d3b67c", glow: "rgba(215, 187, 116, 0.72)" },
-  { start: "#4a6f3f", end: "#a7d896", glow: "rgba(151, 212, 126, 0.72)" }
-];
+if (localStorage.getItem(MOTION_KEY) === "1") {
+  document.body.classList.add("reduce-motion-user");
+}
 
-const backgroundImages = [
-  "assets/images/imagem-02.jpeg",
-  "assets/images/imagem-03.jpeg",
-  "assets/images/imagem-04.jpeg",
-  "assets/images/imagem-05.jpeg",
-  "assets/images/imagem-06.jpeg"
-];
+const isMotionReduced = () =>
+  prefersReducedMotion.matches ||
+  document.body.classList.contains("reduce-motion-user");
 
 const state = {
   progressWidth: 0,
   targetProgressWidth: 0,
-  transitionProgress: scrollTransitions.map(() => 0),
-  transitionTargets: scrollTransitions.map(() => 0),
-  parallaxShift: scrollTransitions.map(() => 0),
-  parallaxScale: scrollTransitions.map(() => 1.12),
-  activeBackgroundIndex: 0,
-  candidateBackgroundIndex: 0,
-  candidateSince: 0,
-  backgroundMix: 0,
-  targetBackgroundMix: 0,
-  ambientPhase: Math.random() * Math.PI * 2
+  parallaxY: editorialBreaks.map(() => 0)
 };
 
+const scroll3dSelectorsFull = [
+  ".editorial-break",
+  ".hero-card",
+  ".case-card",
+  ".cards .card",
+  ".timeline article",
+  ".inline-cta",
+  ".testimonial",
+  ".newsletter-wrap",
+  ".quote blockquote"
+];
+
+const scroll3dSelectorsLite = [".editorial-break", ".hero-card"];
+
+const getScroll3dSelectors = () => {
+  if (window.innerWidth <= 920) return scroll3dSelectorsLite;
+  return scroll3dSelectorsFull;
+};
+
+const scroll3dElements = [];
+
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+const focusStatus = (node) => {
+  if (!node) return;
+  node.scrollIntoView({
+    behavior: isMotionReduced() ? "auto" : "smooth",
+    block: "nearest"
+  });
+};
 const lerp = (start, end, factor) => start + (end - start) * factor;
 const easeInOut = (t) => 0.5 - Math.cos(Math.PI * clamp(t, 0, 1)) / 2;
 const fieldErrorMap = new WeakMap();
@@ -98,56 +111,94 @@ const registerFieldHelper = (field, prefix) => {
   fieldErrorMap.set(field, helper);
 };
 
-document.body.classList.remove("no-js");
-document.body.classList.add("js-enabled");
+let siteReady = false;
 
-const loaderStartTime = performance.now();
-const minimumLoaderDuration = prefersReducedMotion.matches ? 220 : 1400;
-const maximumLoaderDuration = prefersReducedMotion.matches ? 900 : 3200;
-let loaderDismissed = false;
-
-const dismissLoader = () => {
-  if (loaderDismissed) return;
-  loaderDismissed = true;
-  document.body.classList.add("is-loaded");
-  document.body.classList.remove("is-loading");
+const finishSiteReady = () => {
+  if (siteReady) return;
+  siteReady = true;
+  document.body.classList.remove("no-js");
+  document.body.classList.add("js-enabled", "is-loaded", "is-ready");
+  document.querySelectorAll(".reveal").forEach((element) => {
+    element.classList.add("is-visible");
+  });
+  const barFill = document.querySelector(".site-loader__fill");
+  const loaderTrack = document.querySelector(".site-loader__track");
+  if (barFill) barFill.style.width = "100%";
+  if (loaderTrack) loaderTrack.setAttribute("aria-valuenow", "100");
   if (siteLoader) {
-    window.setTimeout(() => {
-      siteLoader.setAttribute("aria-hidden", "true");
-    }, 550);
+    siteLoader.classList.add("is-done");
+    siteLoader.setAttribute("aria-hidden", "true");
+    siteLoader.setAttribute("aria-busy", "false");
   }
+  initScroll3D();
+  syncAnimationState();
 };
 
-const scheduleLoaderDismiss = () => {
-  const elapsed = performance.now() - loaderStartTime;
-  const remaining = Math.max(0, minimumLoaderDuration - elapsed);
-  window.setTimeout(dismissLoader, remaining);
+const initSiteLoader = () => {
+  if (!siteLoader) {
+    finishSiteReady();
+    return;
+  }
+  const barFill = siteLoader.querySelector(".site-loader__fill");
+  const loaderTrack = siteLoader.querySelector(".site-loader__track");
+  let progress = 0;
+
+  const tick = () => {
+    if (siteReady) return;
+    progress = Math.min(100, progress + (isMotionReduced() ? 50 : 14));
+    if (barFill) barFill.style.width = `${progress}%`;
+    if (loaderTrack) loaderTrack.setAttribute("aria-valuenow", String(Math.round(progress)));
+    if (progress < 100) window.setTimeout(tick, isMotionReduced() ? 40 : 70);
+  };
+  tick();
+
+  const delay = isMotionReduced() ? 120 : siteConfig.loaderMs || 750;
+  const maxDelay = siteConfig.loaderMaxMs || 2600;
+  window.setTimeout(finishSiteReady, delay);
+  window.setTimeout(finishSiteReady, maxDelay);
 };
 
-if (!siteLoader) {
-  dismissLoader();
-} else {
-  const forceDismissTimeout = window.setTimeout(dismissLoader, maximumLoaderDuration);
-  const resolveLoader = () => {
-    window.clearTimeout(forceDismissTimeout);
-    scheduleLoaderDismiss();
+const initMotionToggle = () => {
+  const toggle = document.querySelector("[data-motion-toggle]");
+  if (!toggle) return;
+
+  const syncToggle = () => {
+    const reduced = localStorage.getItem(MOTION_KEY) === "1";
+    document.body.classList.toggle("reduce-motion-user", reduced);
+    toggle.setAttribute("aria-pressed", String(reduced));
+    toggle.textContent = reduced ? "Restaurar animações" : "Reduzir animações";
+    initScroll3D();
+    syncAnimationState();
   };
 
-  if (document.readyState === "complete" || document.readyState === "interactive") {
-    resolveLoader();
-  } else {
-    document.addEventListener("DOMContentLoaded", resolveLoader, { once: true });
-    window.addEventListener("load", resolveLoader, { once: true });
-  }
+  syncToggle();
+  toggle.addEventListener("click", () => {
+    const next = localStorage.getItem(MOTION_KEY) !== "1";
+    localStorage.setItem(MOTION_KEY, next ? "1" : "0");
+    syncToggle();
+  });
+};
+
+const startApp = () => {
+  initSiteLoader();
+  initMotionToggle();
+};
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", startApp, { once: true });
+} else {
+  startApp();
 }
 
-if (bgPrimary) {
-  bgPrimary.style.backgroundImage = `url("${backgroundImages[0]}")`;
-}
-
-if (bgSecondary) {
-  bgSecondary.style.backgroundImage = `url("${backgroundImages[1]}")`;
-}
+window.addEventListener(
+  "load",
+  () => {
+    if (!siteReady) finishSiteReady();
+    updateScroll3D();
+    primeVisibleReveals();
+  },
+  { once: true }
+);
 
 if (navToggle && primaryNav) {
   const setNavOpen = (open) => {
@@ -165,6 +216,18 @@ if (navToggle && primaryNav) {
 
   navLinks.forEach((link) => {
     link.addEventListener("click", () => setNavOpen(false));
+  });
+
+  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener("click", (event) => {
+      const id = anchor.getAttribute("href");
+      if (!id || id === "#") return;
+      const target = document.querySelector(id);
+      if (!target) return;
+      event.preventDefault();
+      target.scrollIntoView({ behavior: prefersReducedMotion.matches ? "auto" : "smooth", block: "start" });
+      history.pushState(null, "", id);
+    });
   });
 
   document.addEventListener("keydown", (event) => {
@@ -224,6 +287,7 @@ if (form) {
       if (formStatus) {
         formStatus.textContent = "Mensagem enviada com sucesso! Retornaremos em breve pelo e-mail informado.";
         formStatus.className = "form-status is-success";
+        focusStatus(formStatus);
       }
       return;
     }
@@ -260,6 +324,7 @@ if (form) {
           formStatus.textContent =
             "Mensagem enviada com sucesso! Retornaremos em breve pelo e-mail informado.";
           formStatus.className = "form-status is-success";
+          focusStatus(formStatus);
         }
         form.reset();
         fields.forEach((field) => clearFieldError(field));
@@ -320,6 +385,7 @@ if (newsletterForm) {
         newsletterStatus.textContent =
           "Inscrição enviada com sucesso! Em breve você receberá novidades no seu e-mail.";
         newsletterStatus.className = "newsletter-status is-success";
+        focusStatus(newsletterStatus);
       }
       return;
     }
@@ -357,6 +423,7 @@ if (newsletterForm) {
           newsletterStatus.textContent =
             "Inscrição enviada com sucesso! Em breve você receberá novidades no seu e-mail.";
           newsletterStatus.className = "newsletter-status is-success";
+          focusStatus(newsletterStatus);
         }
         newsletterForm.reset();
         clearFieldError(newsletterInput);
@@ -430,62 +497,100 @@ const updateActiveNavLink = () => {
   }
 };
 
-const updateImageTransitions = () => {
-  if (!scrollTransitions.length) {
+const clearScroll3DStyles = (element) => {
+  element.classList.remove("scroll-3d");
+  element.style.removeProperty("--rx");
+  element.style.removeProperty("--sy");
+  element.style.removeProperty("--sz");
+  element.style.removeProperty("--sc");
+};
+
+const initScroll3D = () => {
+  scroll3dElements.length = 0;
+  document.body.classList.remove("has-scroll-3d");
+  document.querySelectorAll(".scroll-3d").forEach(clearScroll3DStyles);
+
+  if (isMotionReduced()) {
+    return;
+  }
+
+  getScroll3dSelectors().forEach((selector) => {
+    document.querySelectorAll(selector).forEach((element) => {
+      element.classList.add("scroll-3d");
+      scroll3dElements.push(element);
+    });
+  });
+
+  if (scroll3dElements.length) {
+    document.body.classList.add("has-scroll-3d");
+    updateScroll3D();
+  }
+};
+
+const updateScroll3D = () => {
+  if (!scroll3dElements.length || isMotionReduced()) {
     return;
   }
 
   const viewportHeight = window.innerHeight;
-  let strongestIndex = 0;
-  let strongestValue = -1;
+  const motionScale = viewportHeight <= 920 ? 0.5 : 1;
 
-  scrollTransitions.forEach((transition, index) => {
-    const rect = transition.getBoundingClientRect();
-    const progress = (viewportHeight - rect.top) / (viewportHeight + rect.height);
-    const normalized = Math.max(0, Math.min(progress, 1));
-    const eased = easeInOut(normalized);
-    const shift = (eased - 0.5) * 48;
-    const scale = 1.16 - eased * 0.11;
-    const visibility = clamp(1 - Math.abs(normalized - 0.5) * 2, 0, 1);
-    const smoothVisibility = easeInOut(visibility);
+  scroll3dElements.forEach((element) => {
+    const rect = element.getBoundingClientRect();
+    if (rect.bottom < -viewportHeight * 0.25 || rect.top > viewportHeight * 1.25) {
+      return;
+    }
 
-    state.parallaxShift[index] = shift;
-    state.parallaxScale[index] = scale;
-    transition.style.setProperty("--overlay-opacity", (1 - smoothVisibility * 0.32).toFixed(3));
-    transition.style.setProperty("--media-opacity", (0.88 + smoothVisibility * 0.12).toFixed(3));
-    transition.style.setProperty("--media-saturation", (1.02 + smoothVisibility * 0.2).toFixed(3));
-    transition.style.setProperty("--media-contrast", (1.01 + smoothVisibility * 0.09).toFixed(3));
+    const isEditorial = element.classList.contains("editorial-break");
+    const center = rect.top + rect.height * 0.5;
+    const delta = (center - viewportHeight * 0.5) / viewportHeight;
+    const focus = clamp(1 - Math.abs(delta) * 1.25, 0, 1);
+    const weight = isEditorial ? 1.35 : 1;
 
-    state.transitionTargets[index] = smoothVisibility;
-    if (smoothVisibility > strongestValue) {
-      strongestValue = smoothVisibility;
-      strongestIndex = index;
+    const rotateX = clamp(delta * -16 * weight * motionScale, -22, 22);
+    const translateY = delta * -32 * weight * motionScale;
+    const translateZ = (focus - 0.45) * 90 * weight * motionScale;
+    const scale = 0.94 + focus * 0.06;
+
+    element.style.setProperty("--rx", `${rotateX.toFixed(2)}deg`);
+    element.style.setProperty("--sy", `${translateY.toFixed(1)}px`);
+    element.style.setProperty("--sz", `${translateZ.toFixed(1)}px`);
+    element.style.setProperty("--sc", scale.toFixed(3));
+
+    if (isEditorial) {
+      const media = element.querySelector(".editorial-break__media");
+      const copy = element.querySelector(".editorial-break__copy");
+      if (media) {
+        const parallaxY = delta * -42 * motionScale;
+        media.style.setProperty("--parallax-y", `${parallaxY.toFixed(1)}px`);
+        media.style.setProperty("--media-rx", `${(rotateX * 0.35).toFixed(2)}deg`);
+      }
+      if (copy) {
+        copy.style.setProperty("--copy-z", `${(36 + focus * 28).toFixed(0)}px`);
+      }
     }
   });
+};
 
-  const activePalette = transitionPalettes[strongestIndex] || transitionPalettes[0];
-  const influence = strongestValue > 0 ? strongestValue : 0;
-  const defaultPalette = transitionPalettes[0];
-
-  rootStyle.setProperty("--progress-start", influence > 0.08 ? activePalette.start : defaultPalette.start);
-  rootStyle.setProperty("--progress-end", influence > 0.08 ? activePalette.end : defaultPalette.end);
-  rootStyle.setProperty("--progress-glow", influence > 0.08 ? activePalette.glow : defaultPalette.glow);
-
-  const targetIndex = strongestIndex % backgroundImages.length;
-  const now = performance.now();
-  if (targetIndex !== state.activeBackgroundIndex && strongestValue > 0.28 && bgSecondary) {
-    if (state.candidateBackgroundIndex !== targetIndex) {
-      state.candidateBackgroundIndex = targetIndex;
-      state.candidateSince = now;
-    } else if (now - state.candidateSince > 220) {
-      state.activeBackgroundIndex = targetIndex;
-      bgSecondary.style.backgroundImage = `url("${backgroundImages[targetIndex]}")`;
-      state.targetBackgroundMix = 1;
-    }
-  } else {
-    state.candidateBackgroundIndex = state.activeBackgroundIndex;
-    state.candidateSince = now;
+const updateEditorialParallax = () => {
+  if (isMotionReduced()) {
+    return;
   }
+  if (document.body.classList.contains("has-scroll-3d")) {
+    return;
+  }
+
+  const viewportHeight = window.innerHeight;
+  editorialBreaks.forEach((block, index) => {
+    const media = block.querySelector(".editorial-break__media");
+    if (!media) return;
+    const rect = block.getBoundingClientRect();
+    const progress = (viewportHeight - rect.top) / (viewportHeight + rect.height);
+    const normalized = clamp(progress, 0, 1);
+    const shift = (normalized - 0.5) * 36;
+    state.parallaxY[index] = shift;
+    media.style.setProperty("--parallax-y", `${shift.toFixed(1)}px`);
+  });
 };
 
 let ticking = false;
@@ -493,17 +598,10 @@ const onScroll = () => {
   updateScrollProgress();
   updateActiveNavLink();
   updateHeaderState();
-  document.body.classList.add("is-scrolling");
-  const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-  const scrollRatio = maxScroll > 0 ? window.scrollY / maxScroll : 0;
-  document.body.classList.toggle("is-deep-scroll", scrollRatio > 0.42);
-  clearTimeout(scrollStateTimeout);
-  scrollStateTimeout = window.setTimeout(() => {
-    document.body.classList.remove("is-scrolling");
-  }, 220);
   if (!ticking) {
     window.requestAnimationFrame(() => {
-      updateImageTransitions();
+      updateScroll3D();
+      updateEditorialParallax();
       ticking = false;
     });
     ticking = true;
@@ -521,34 +619,6 @@ const animate = () => {
     progressBar.style.width = `${state.progressWidth.toFixed(2)}%`;
   }
 
-  scrollTransitions.forEach((transition, index) => {
-    state.transitionProgress[index] = lerp(state.transitionProgress[index], state.transitionTargets[index], 0.14);
-    transition.style.setProperty("--parallax-shift", `${state.parallaxShift[index].toFixed(2)}px`);
-    transition.style.setProperty("--parallax-scale", state.parallaxScale[index].toFixed(3));
-  });
-
-  if (bgPrimary && bgSecondary) {
-    state.backgroundMix = lerp(state.backgroundMix, state.targetBackgroundMix, 0.06);
-    bgSecondary.style.opacity = state.backgroundMix.toFixed(3);
-    const reduceMotion = prefersReducedMotion.matches;
-    const t = performance.now() * 0.00025 + state.ambientPhase;
-    const driftX = reduceMotion ? 0 : Math.sin(t) * 7;
-    const driftY = reduceMotion ? 0 : Math.cos(t * 1.25) * 5;
-    const driftXSecondary = reduceMotion ? 0 : Math.sin(t + 1.8) * 9;
-    const driftYSecondary = reduceMotion ? 0 : Math.cos(t * 1.12 + 1.2) * 7;
-    bgPrimary.style.transform = `translate3d(${driftX.toFixed(2)}px, ${driftY.toFixed(2)}px, 0) scale(${(1.08 - state.backgroundMix * 0.02).toFixed(3)})`;
-    bgSecondary.style.transform = `translate3d(${driftXSecondary.toFixed(2)}px, ${driftYSecondary.toFixed(2)}px, 0) scale(${(1.1 - state.backgroundMix * 0.02).toFixed(3)})`;
-
-    if (Math.abs(state.backgroundMix - state.targetBackgroundMix) < 0.01 && state.targetBackgroundMix === 1) {
-      bgPrimary.style.backgroundImage = bgSecondary.style.backgroundImage;
-      state.backgroundMix = 0;
-      state.targetBackgroundMix = 0;
-      bgSecondary.style.opacity = "0";
-      bgPrimary.style.transform = "scale(1.08)";
-      bgSecondary.style.transform = "scale(1.1)";
-    }
-  }
-
   animationFrameId = window.requestAnimationFrame(animate);
 };
 
@@ -561,7 +631,7 @@ const countupObserver = new IntersectionObserver(
       if (!target || element.dataset.animated === "true") return;
 
       element.dataset.animated = "true";
-      if (prefersReducedMotion.matches) {
+      if (isMotionReduced()) {
         element.textContent = `${target}${target === 320 ? " mil+" : "+"}`.replace("28+", "28").replace("17+", "17");
         if (target === 320) element.textContent = "320 mil+";
         if (target === 120) element.textContent = "120+";
@@ -606,12 +676,44 @@ const revealObserver = new IntersectionObserver(
       }
     });
   },
-  { threshold: 0.2, rootMargin: "0px 0px -40px 0px" }
+  { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
 );
 
-revealElements.forEach((element) => {
-  revealObserver.observe(element);
+const primeVisibleReveals = () => {
+  revealElements.forEach((element) => {
+    const rect = element.getBoundingClientRect();
+    if (rect.top < window.innerHeight * 0.92) {
+      element.classList.add("is-visible");
+    }
+  });
+};
+
+revealElements.forEach((element, index) => {
+  const parent = element.parentElement;
+  const siblings = parent ? Array.from(parent.children).filter((child) => child.classList.contains("reveal")) : [];
+  const siblingIndex = siblings.indexOf(element);
+  const delay = siblingIndex >= 0 ? siblingIndex * 70 : index % 5 * 70;
+  element.style.setProperty("--reveal-delay", `${delay}ms`);
+  if (!document.body.classList.contains("is-loaded")) {
+    revealObserver.observe(element);
+  } else if (!element.classList.contains("is-visible")) {
+    revealObserver.observe(element);
+  }
 });
+
+if (document.body.classList.contains("is-loaded")) {
+  primeVisibleReveals();
+} else {
+  window.addEventListener(
+    "load",
+    () => {
+      if (document.body.classList.contains("is-loaded")) {
+        primeVisibleReveals();
+      }
+    },
+    { once: true }
+  );
+}
 
 countupElements.forEach((element) => {
   countupObserver.observe(element);
@@ -619,8 +721,9 @@ countupElements.forEach((element) => {
 
 window.addEventListener("scroll", onScroll, { passive: true });
 const syncAnimationState = () => {
-  const reducedMotion = prefersReducedMotion.matches;
+  const reducedMotion = isMotionReduced();
   shouldAnimate = !document.hidden && !reducedMotion;
+  initScroll3D();
 
   if (!shouldAnimate) {
     if (animationFrameId) {
@@ -630,12 +733,7 @@ const syncAnimationState = () => {
     if (progressBar) {
       progressBar.style.width = `${state.targetProgressWidth.toFixed(2)}%`;
     }
-    if (bgPrimary) {
-      bgPrimary.style.transform = "scale(1.08)";
-    }
-    if (bgSecondary) {
-      bgSecondary.style.transform = "scale(1.1)";
-    }
+    updateScroll3D();
     return;
   }
 
@@ -647,12 +745,15 @@ const syncAnimationState = () => {
 prefersReducedMotion.addEventListener("change", syncAnimationState);
 document.addEventListener("visibilitychange", syncAnimationState);
 window.addEventListener("resize", () => {
-  updateImageTransitions();
+  initScroll3D();
+  updateScroll3D();
+  updateEditorialParallax();
   updateActiveNavLink();
   updateHeaderState();
 });
 updateScrollProgress();
-updateImageTransitions();
+updateScroll3D();
+updateEditorialParallax();
 updateActiveNavLink();
 updateHeaderState();
 syncAnimationState();
